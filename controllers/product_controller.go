@@ -36,12 +36,19 @@ func AddProduct(c*gin.Context){
 }
 
 func GetProductById(c*gin.Context){
-
+	var product models.Product
+	id := c.Param("id")
+	err := models.GetProductById(&product,id)
+	if err != nil{
+		c.JSON(http.StatusInternalServerError ,gin.H{"err":err.Error()})
+	}else{
+		c.JSON(http.StatusOK  ,product)
+	}
 }
 
 func UpdateProduct(c*gin.Context){
 	var product models.Product
-	id := c.Query("id")
+	id := c.Param("id")
 	c.BindJSON(&product)
 	err := models.UpdateProduct(&product,id)
 	if err != nil{
@@ -53,7 +60,7 @@ func UpdateProduct(c*gin.Context){
 
 func DeleteProduct(c*gin.Context){
 	var product models.Product
-	id := c.Query("id")
+	id := c.Param("id")
 	err := models.DeleteProduct(&product,id)
 	if err != nil{
 	   c.JSON(http.StatusInternalServerError,gin.H{"error":err.Error()})
